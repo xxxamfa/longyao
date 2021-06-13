@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 // 引用FontAwesome start
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 // 引用FontAwesome end
 
 const FileSearch = ({ title, onFileSearch }) => {
@@ -43,26 +43,26 @@ const FileSearch = ({ title, onFileSearch }) => {
     }
   }, [inputActive]);
   return (
-    <div className="alert alert-primary">
+    <div className="alert alert-primary d-flex justify-content-between align-items-center">
       {!inputActive && (
-        <div className="d-flex justify-content-between align-items-center">
+        <>
           <span>{title}</span>
           <button
             type="button"
-            className="btn btn-primary"
+            className="icon-button"
             onClick={() => {
               setInputActive(true);
             }}
           >
-            <FontAwesomeIcon icon={faSearch} title="搜尋" />
+            <FontAwesomeIcon icon={faSearch} size="lg" title="搜尋" />
           </button>
-        </div>
+        </>
       )}
       {/* inputActive為true就顯示後面<div>... */}
       {inputActive && (
-        <div className="row">
+        <>
           <input
-            className="col-8"
+            className="form-control"
             value={value}
             ref={node}
             onChange={(e) => {
@@ -71,12 +71,12 @@ const FileSearch = ({ title, onFileSearch }) => {
           />
           <button
             type="button"
-            className="btn btn-primary col-4"
+            className="icon-button"
             onClick={closeSearch}
           >
-            關閉
+            <FontAwesomeIcon icon={faTimes} size="lg" title="關閉" />
           </button>
-        </div>
+        </>
       )}
     </div>
   );
