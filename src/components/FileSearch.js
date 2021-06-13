@@ -3,7 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 // 引用FontAwesome end
-
+// 引入傳入型別檢查工具
+import PropTypes from "prop-types";
 const FileSearch = ({ title, onFileSearch }) => {
   const [inputActive, setInputActive] = useState(false);
   const [value, setValue] = useState("");
@@ -69,17 +70,24 @@ const FileSearch = ({ title, onFileSearch }) => {
               setValue(e.target.value);
             }}
           />
-          <button
-            type="button"
-            className="icon-button"
-            onClick={closeSearch}
-          >
+          <button type="button" className="icon-button" onClick={closeSearch}>
             <FontAwesomeIcon icon={faTimes} size="lg" title="關閉" />
           </button>
         </>
       )}
     </div>
   );
+};
+
+// 檢查型別 . isRequired:必傳入
+FileSearch.propTypes = {
+  title: PropTypes.string,
+  inFileSearch: PropTypes.func.isRequired,
+};
+
+// 預設傳入值設定
+FileSearch.defaultProps = {
+  title: "j8 d8 d8",
 };
 
 export default FileSearch;
