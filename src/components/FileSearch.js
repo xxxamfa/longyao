@@ -5,36 +5,48 @@ import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 // 引用FontAwesome end
 // 引入傳入型別檢查工具
 import PropTypes from "prop-types";
+import useKeyPress from "../hooks/useKeyPress";
 const FileSearch = ({ title, onFileSearch }) => {
   const [inputActive, setInputActive] = useState(false);
   const [value, setValue] = useState("");
+
+  // 鍵盤hook使用
+  const enterPressed = useKeyPress(13);
+  const escPressed = useKeyPress(27);
   // 按搜尋時游標focus到輸入框
   let node = useRef(null);
   // method寫這
   // 關閉搜尋
-  const closeSearch = (e) => {
+  const closeSearch = () => {
     // 取消默認處理
-    e.preventDefault();
+    // e.preventDefault();
     setInputActive(false);
     setValue("");
   };
   //全域事件
   useEffect(() => {
-    const handleInputEvent = (event) => {
-      const { keyCode } = event;
-      // enter=13 . exc=27
-      if (keyCode === 13 && inputActive) {
-        onFileSearch(value);
-      } else if (keyCode === 27 && inputActive) {
-        closeSearch(event);
-      }
-    };
-    // 使用
-    document.addEventListener("keyup", handleInputEvent);
-    // 釋放
-    return () => {
-      document.removeEventListener("keyup", handleInputEvent);
-    };
+    // const handleInputEvent = (event) => {
+    //   const { keyCode } = event;
+    //   // enter=13 . exc=27
+    //   if (keyCode === 13 && inputActive) {
+    //     onFileSearch(value);
+    //   } else if (keyCode === 27 && inputActive) {
+    //     closeSearch(event);
+    //   }
+    // };
+    // // 使用
+    // document.addEventListener("keyup", handleInputEvent);
+    // // 釋放
+    // return () => {
+    //   document.removeEventListener("keyup", handleInputEvent);
+    // };
+
+    if (enterPressed && inputActive) {
+      onFileSearch(value);
+    }
+    if (escPressed && inputActive) {
+      closeSearch();
+    }
   });
   // watch
   // focus輸入框
