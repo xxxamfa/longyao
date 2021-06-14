@@ -7,6 +7,7 @@ import FileList from "./components/FileList";
 import defaultFiles from "./utils/defaultFiles";
 import BottomBtn from "./components/BottomBtn";
 import { faFileImport, faPlus } from "@fortawesome/free-solid-svg-icons";
+import TabList from "./components/TabList";
 
 function App() {
   return (
@@ -49,7 +50,15 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="col-9 bg-primary">右邊</div>
+        <div className="col-9 right-panel">
+          <TabList
+            files={defaultFiles}
+            onTabClick={(id) => {
+              console.log(id);
+            }}
+            activeId="1"
+          />
+        </div>
       </div>
     </div>
   );
