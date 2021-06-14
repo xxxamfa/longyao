@@ -3,39 +3,43 @@ import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import PropTypes from "prop-types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import useKeyPress from "../hooks/useKeyPress";
+
 
 const FileList = ({ files, onFileClick, onSaveEdit, onFileDelete }) => {
   // 是否為修改狀態與修改的值
   const [editStatus, setEditStatus] = useState(false);
   const [value, setValue] = useState("");
+
+  // 鍵盤hook使用
+  const enterPressed = useKeyPress(13);
+  const escPressed = useKeyPress(27);
   // 關閉輸入
-  const closeSearch = (e) => {
+  const closeSearch = () => {
     // 取消默認處理
-    e.preventDefault();
+    // e.preventDefault();
     setEditStatus(false);
     setValue("");
   };
   //全域事件
   useEffect(() => {
-    const handleInputEvent = (event) => {
-      const { keyCode } = event;
       // enter=13 . exc=27
-      if (keyCode === 13 && editStatus) {
+      if (enterPressed && editStatus) {
         const editItem = files.find((file) => file.id === editStatus);
         onSaveEdit(editItem.id, value);
         setEditStatus(false);
         setValue("");
-      } else if (keyCode === 27 && editStatus) {
-        closeSearch(event);
+      } else if (escPressed && editStatus) {
+        closeSearch();
       }
-    };
-    // 使用
-    document.addEventListener("keyup", handleInputEvent);
-    // 釋放
-    return () => {
-      document.removeEventListener("keyup", handleInputEvent);
-    };
-  });
+    }
+    // // 使用
+    // document.addEventListener("keyup", handleInputEvent);
+    // // 釋放
+    // return () => {
+    //   document.removeEventListener("keyup", handleInputEvent);
+    // };
+  );
   return (
     <ul className="list-group list-group-flush file-list">
       {files.map((file) => (
