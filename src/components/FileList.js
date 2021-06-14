@@ -1,9 +1,41 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import PropTypes from "prop-types";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 
 const FileList = ({ files, onFileClick, onSaveEdit, onFileDelete }) => {
+  // 是否為修改狀態與修改的值
+  const [editStatus, setEditStatus] = useState(false);
+  const [value, setValue] = useState("");
+  // 關閉輸入
+  const closeSearch = (e) => {
+    // 取消默認處理
+    e.preventDefault();
+    setEditStatus(false);
+    setValue("");
+  };
+  //全域事件
+  useEffect(() => {
+    const handleInputEvent = (event) => {
+      const { keyCode } = event;
+      // enter=13 . exc=27
+      if (keyCode === 13 && editStatus) {
+        const editItem = files.find((file) => file.id === editStatus);
+        onSaveEdit(editItem.id, value);
+        setEditStatus(false);
+        setValue("");
+      } else if (keyCode === 27 && editStatus) {
+        closeSearch(event);
+      }
+    };
+    // 使用
+    document.addEventListener("keyup", handleInputEvent);
+    // 釋放
+    return () => {
+      document.removeEventListener("keyup", handleInputEvent);
+    };
+  });
   return (
     <ul className="list-group list-group-flush file-list">
       {files.map((file) => (
@@ -11,24 +43,58 @@ const FileList = ({ files, onFileClick, onSaveEdit, onFileDelete }) => {
           className="list-group-item bg-light row d-flex align-items-center"
           key={file.id}
         >
-          <span className="col-2">
-            <FontAwesomeIcon icon={faMarkdown} size="lg" />
-          </span>
-          <span className="col-8">{file.title}</span>
-          <button
-            type="button"
-            className="icon-button col-1"
-            onClick={() => {}}
-          >
-            <FontAwesomeIcon icon={faEdit} size="lg" title="編輯" />
-          </button>
-          <button
-            type="button"
-            className="icon-button col-1"
-            onClick={() => {}}
-          >
-            <FontAwesomeIcon icon={faTrash} size="lg" title="刪除" />
-          </button>
+          {file.id !== editStatus && (
+            <>
+              <span className="col-2">
+                <FontAwesomeIcon icon={faMarkdown} size="lg" />
+              </span>
+              <span
+                className="col-8"
+                onClick={() => {
+                  onFileClick(file.id);
+                }}
+              >
+                {file.title}
+              </span>
+              <button
+                type="button"
+                className="icon-button col-1 c-link"
+                onClick={() => {
+                  setEditStatus(file.id);
+                  setValue(file.title);
+                }}
+              >
+                <FontAwesomeIcon icon={faEdit} size="lg" title="編輯" />
+              </button>
+              <button
+                type="button"
+                className="icon-button col-1"
+                onClick={() => {
+                  onFileDelete(file.id);
+                }}
+              >
+                <FontAwesomeIcon icon={faTrash} size="lg" title="刪除" />
+              </button>
+            </>
+          )}
+          {file.id === editStatus && (
+            <>
+              <input
+                className="form-control col-10"
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                }}
+              />
+              <button
+                type="button"
+                className="icon-button col-2"
+                onClick={closeSearch}
+              >
+                <FontAwesomeIcon icon={faTimes} size="lg" title="關閉" />
+              </button>
+            </>
+          )}
         </li>
       ))}
     </ul>
@@ -37,5 +103,8 @@ const FileList = ({ files, onFileClick, onSaveEdit, onFileDelete }) => {
 
 FileList.propTypes = {
   files: PropTypes.array,
+  onFileClick: PropTypes.func,
+  onFileDelete: PropTypes.func,
+  onSaveEdit: PropTypes.func,
 };
 export default FileList;

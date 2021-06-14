@@ -4,3 +4,6 @@
   /* 不知道有沒有差 */
   color: inherit;
 }
+.c-link {
+  cursor: pointer;
+}

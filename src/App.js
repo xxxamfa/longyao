@@ -17,7 +17,19 @@ function App() {
               console.log(value);
             }}
           />
-          <FileList files={defaultFiles} />
+          <FileList
+            files={defaultFiles}
+            onFileClick={(id) => {
+              console.log(id);
+            }}
+            onFileDelete={(id) => {
+              console.log("Delete", id);
+            }}
+            onSaveEdit={(id, newValue) => {
+              console.log(id);
+              console.log(newValue);
+            }}
+          />
         </div>
         <div className="col-9 bg-primary">右邊</div>
       </div>
