@@ -57,6 +57,10 @@ function App() {
               console.log(id);
             }}
             activeId="1"
+            onCloseTab={(id) => {
+              console.log("close", id);
+            }}
+            unsaveIds={["1", "2"]}
           />
         </div>
       </div>
