@@ -1,6 +1,4 @@
 import "./App.css";
-// 引入BS
-import "bootstrap/dist/css/bootstrap.min.css";
 // 引入元件
 import FileSearch from "./components/FileSearch";
 import FileList from "./components/FileList";
@@ -11,6 +9,9 @@ import TabList from "./components/TabList";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useState } from "react";
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
+import { Button, DatePicker, Tooltip } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 function App() {
   const [files, setFiles] = useState(defaultFiles);
@@ -59,67 +60,21 @@ function App() {
   };
   return (
     <div className="App container-fluid px-0">
-      <div className="row no-gutters">
-        <div className="col-3 bg-light left-panel">
-          <FileSearch
-            title="我的雲文檔"
-            onFileSearch={(value) => {
-              console.log(value);
-            }}
-          />
-          <FileList
-            files={files}
-            onFileClick={fileClick}
-            onFileDelete={(id) => {
-              console.log("Delete", id);
-            }}
-            onSaveEdit={(id, newValue) => {
-              console.log(id);
-              console.log(newValue);
-            }}
-          />
-          <div className="row no-gutters button-group">
-            <div className="col">
-              <BottomBtn
-                text="新建"
-                colorClass="btn-primary"
-                icon={faPlus}
-              ></BottomBtn>
-            </div>
-            <div className="col">
-              <BottomBtn
-                text="導入"
-                colorClass="btn-success"
-                icon={faFileImport}
-              ></BottomBtn>
-            </div>
-          </div>
-        </div>
-        <div className="col-9 right-panel">
-          {!activeFile && (
-            <div className="start-page">选择或者创建新的 Markdown 文档</div>
-          )}
-          {activeFile && (
-            <>
-              <TabList
-                files={openedFiles}
-                onTabClick={tabClick}
-                activeId={activeFileID}
-                onCloseTab={tabClose}
-                unsaveIds={unsavedFileIDs}
-              />
-              <SimpleMDE
-                key={activeFile && activeFile.id}
-                value={activeFile && activeFile.body}
-                onChange={(value) => {
-                  fileChange(activeFile.id, value);
-                }}
-                options={{ minHeight: "515px" }}
-              />
-            </>
-          )}
-        </div>
-      </div>
+      <DatePicker />
+      <Tooltip title="search">
+        <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+      </Tooltip>
+      <Button type="primary" shape="circle">
+        A
+      </Button>
+      <Button type="primary" icon={<SearchOutlined />}>
+        Search
+      </Button>
+      <Tooltip title="search">
+        <Button shape="circle" icon={<SearchOutlined />} />
+      </Tooltip>
+     
+      
     </div>
   );
 }
