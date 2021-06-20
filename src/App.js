@@ -1,81 +1,103 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import "antd/dist/antd.css";
 import "./App.css";
-// 引入元件
-import FileSearch from "./components/FileSearch";
-import FileList from "./components/FileList";
-import defaultFiles from "./utils/defaultFiles";
-import BottomBtn from "./components/BottomBtn";
-import { faFileImport, faPlus } from "@fortawesome/free-solid-svg-icons";
-import TabList from "./components/TabList";
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import { useState } from "react";
-import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Button, DatePicker, Tooltip } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import "./index.css";
+import { Layout, Menu, Tabs, DatePicker } from "antd";
+import {
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from "@ant-design/icons";
+import MainMenu from "./components/MainMenu";
+// 資料表引入 start
+import customerTable from "./utils/customerTable";
+// 資料表引入 end
 
+import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+import { useState } from "react";
+import ColumnGroup from "antd/lib/table/ColumnGroup";
+const { TabPane } = Tabs;
+const { Content, Sider, Header } = Layout;
 function App() {
-  const [files, setFiles] = useState(defaultFiles);
-  const [activeFileID, setActiveFileID] = useState("");
-  const [openedFileIDs, setOpenedFileIDs] = useState([]);
-  const [unsavedFileIDs, setUnsavedFileIDs] = useState([]);
-  const openedFiles = openedFileIDs.map((openID) => {
-    return files.find((file) => file.id === openID);
+  const [customerFiles, setCustomerFiles] = useState(customerTable);
+  const [mainMenuOpenState, setMainMenuOpenState] = useState(true);
+  const panes = [
+    { title: "Tab 1", content: "Content of Tab Pane 1", key: "1" },
+    { title: "Tab 2", content: "Content of Tab Pane 2", key: "2" },
+  ];
+  const [stateyy, setStateyy] = useState({
+    activeKey: panes[0].key,
+    panes,
   });
-  const activeFile = files.find((file) => file.id === activeFileID);
-  const fileClick = (fileID) => {
-    setActiveFileID(fileID);
-    if (!openedFileIDs.includes(fileID)) {
-      setOpenedFileIDs([...openedFileIDs, fileID]);
-    }
+
+  const onChange = (activeKey) => {
+    this.setState({ activeKey });
   };
-  const tabClick = (fileID) => {
-    setActiveFileID(fileID);
+  const onEdit = (targetKey, action) => {
+    this[action](targetKey);
   };
-  const tabClose = (id) => {
-    // 把OpenedFileIDs裡的id去掉要關閉的ID
-    const tabWithout = openedFileIDs.filter((fileID) => fileID !== id);
-    setOpenedFileIDs(tabWithout);
-    if (tabWithout.length > 0) {
-      setActiveFileID(tabWithout[0]);
-    } else {
-      setActiveFileID("");
-    }
-  };
-  const fileChange = (id, value) => {
-    // console.log(id, value);
-    const newFiles = files.map((file) => {
-      if (file.id === id) {
-        file.body = value;
-      }
-      // console.log("file", file);
-      return file;
-    });
-    console.log("newFiles", newFiles);
-    console.log("files", files);
-    setFiles(newFiles);
-    if (!unsavedFileIDs.includes(id)) {
-      console.log("unsavedFileIDs", unsavedFileIDs);
-      setUnsavedFileIDs([...unsavedFileIDs, id]);
-    }
-  };
+
   return (
-    <div className="App container-fluid px-0">
-      <DatePicker />
-      <Tooltip title="search">
-        <Button type="primary" shape="circle" icon={<SearchOutlined />} />
-      </Tooltip>
-      <Button type="primary" shape="circle">
-        A
-      </Button>
-      <Button type="primary" icon={<SearchOutlined />}>
-        Search
-      </Button>
-      <Tooltip title="search">
-        <Button shape="circle" icon={<SearchOutlined />} />
-      </Tooltip>
-     
-      
-    </div>
+    <Layout className="main-layout">
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={(broken) => {
+          console.log(broken);
+        }}
+        onCollapse={(collapsed, type) => {
+          console.log(collapsed, type);
+        }}
+        collapsible="true"
+        trigger={null}
+        collapsed={mainMenuOpenState}
+      >
+        <div className="logo">放logo</div>
+        <MainMenu />
+      </Sider>
+      <Layout>
+        <Header
+          className="site-layout-sub-header-background"
+          style={{ padding: 0 }}
+        >
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
+            <Menu.Item
+              onClick={() => {
+                setMainMenuOpenState(!mainMenuOpenState);
+              }}
+              key="1"
+            >
+              {mainMenuOpenState && <MenuUnfoldOutlined />}
+              {!mainMenuOpenState && <MenuFoldOutlined />}
+            </Menu.Item>
+          </Menu>
+        </Header>
+        <Tabs
+          hideAdd
+          onChange={onChange}
+          activeKey={stateyy.activeKey}
+          type="editable-card"
+          onEdit={onEdit}
+        >
+          {panes.map((pane) => (
+            <TabPane tab={pane.title} key={pane.key}>
+              {pane.content}
+            </TabPane>
+          ))}
+        </Tabs>
+        <Content style={{ margin: "24px 16px 0" }}>
+          <div
+            className="site-layout-background"
+            style={{ padding: 24, minHeight: 360 }}
+          >
+            <DatePicker />
+          </div>
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
 

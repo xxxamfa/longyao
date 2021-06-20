@@ -13,15 +13,11 @@
   color: #ccc;
   text-align: center;
 }
-.left-panel {
+.main-layout {
   min-height: 100vh;
-  position: relative;
 }
-.button-group {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
-.no-border {
-  border-radius: 0 !important;
+.logo {
+  color: #ccc;
+  font-weight: 500;
+  font-size: 50px;
 }
